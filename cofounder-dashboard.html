@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AERA COGNITIVE (SYS-AIS) — Unified War Room Command Center</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Hind Siliguri', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            ais: {
+              black: '#040507',
+              surface: '#090C15',
+              card: '#0F1322',
+              cardBorder: 'rgba(255, 255, 255, 0.07)',
+              borderFocus: 'rgba(56, 189, 248, 0.45)',
+              blue: '#2563EB',
+              sky: '#38BDF8',
+              emerald: '#10B981',
+              crimson: '#F43F5E',
+              amber: '#F59E0B',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #040507;
+      color: #E2E8F0;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 85% 100%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+        radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
+      background-attachment: fixed;
+    }
+    .glass-card {
+      background: rgba(15, 19, 34, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-interactive {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card-interactive:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+      box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.15);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+
+  <!-- TOP MILITARY HUD STATUS BAR -->
+  <aside class="bg-[#060810] border-b border-zinc-800/90 text-xs px-4 py-2 font-mono flex flex-wrap items-center justify-between gap-3 text-zinc-400">
+    <div class="flex items-center gap-2.5">
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <strong class="text-zinc-200">AIS WAR ROOM ACTIVE:</strong>
+      <span class="text-sky-400 font-bold">72-HR SPRINT TO ৳2,00,615 BDT • 10 LAKH INVESTOR CHALLENGE</span>
+      <span class="text-zinc-600 hidden sm:inline">|</span>
+      <span class="text-zinc-400 hidden sm:inline">Army IBA Specialist Autonomous 6-Gem Workforce</span>
+    </div>
+    <div class="flex items-center gap-3 text-[11px]">
+      <button onclick="toggleHudAudio()" id="hud-audio-btn" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 text-zinc-300 px-2 py-0.5 rounded flex items-center gap-1.5 transition">
+        <span id="hud-audio-dot" class="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
+        <span id="hud-audio-label">40Hz Drone: OFF</span>
+      </button>
+      <span class="hidden md:inline">WhatsApp: <strong class="text-white">+8801410761298</strong></span>
+      <span class="hidden md:inline">Auth: <strong class="text-white">armyibaspecialist@gmail.com</strong></span>
+    </div>
+  </aside>
+
+  <!-- MASTER HEADER -->
+  <header class="border-b border-zinc-800/80 px-6 py-4 bg-[#040507]/90 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Tactical Shield -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-blue-950/70 border border-sky-500/40 flex items-center justify-center p-1.5 shadow-lg shadow-sky-950/50">
+          <svg viewBox="0 0 100 110" class="w-full h-full text-sky-400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5 L88 22 V65 C88 88 50 105 50 105 C50 105 12 88 12 65 V22 Z" stroke="#38BDF8" stroke-width="5" stroke-linejoin="round"/>
+            <circle cx="50" cy="50" r="22" stroke="#0284C7" stroke-width="3" stroke-dasharray="4 2"/>
+            <line x1="50" y1="20" x2="50" y2="80" stroke="#38BDF8" stroke-width="2.5"/>
+            <line x1="20" y1="50" x2="80" y2="50" stroke="#38BDF8" stroke-width="2.5"/>
+            <text x="50" y="58" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="900" fill="#67E8F9" text-anchor="middle">AIS</text>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-extrabold text-white tracking-tight">AERA COGNITIVE WAR ROOM</h1>
+            <span class="text-[9px] bg-sky-500/20 text-sky-300 border border-sky-500/40 px-2 py-0.5 rounded font-mono font-bold">6-GEM MATRIX</span>
+          </div>
+          <span class="text-xs text-zinc-400">System Architecture by Army IBA Specialist (AIS)</span>
+        </div>
+      </div>
+
+      <!-- Quick Treasury Account Selector Pills -->
+      <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+        <button onclick="copyNumber('01720674268', 'bKash Personal')" class="bg-pink-950/40 hover:bg-pink-900/60 border border-pink-700/50 text-pink-300 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 transition">
+          <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span> bKash: +8801720674268
+        </button>
+        <button onclick="copyNumber('01708761298', 'Nagad Personal')" class="bg-orange-950/40 hover:bg-orange-900/60 border border-orange-700/50 text-orange-300 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 transition">
+          <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Nagad: +8801708761298
+        </button>
+        <button onclick="copyNumber('00110466000494', 'Trust Bank')" class="bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-700/50 text-emerald-300 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 transition">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Trust Bank
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN COCKPIT -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 flex-1 w-full">
+
+    <!-- 0. LIVE WIRED 60-SECOND PAYMENT VERIFICATION & ANTI-FRAUD GATE (WIRED TO INDEX.HTML) -->
+    <section class="glass-card rounded-3xl p-6 sm:p-7 border-2 border-emerald-500/40 space-y-5">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest">LIVE WIRE CONNECTED TO INDEX.HTML • 60s ANTI-FRAUD ENGINE</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-black text-white mt-1">
+            🔐 Live Incoming TrxID Verification Queue &amp; 60-Second Unlock PIN Generator
+          </h2>
+          <p class="text-xs text-zinc-400 mt-0.5">
+            যখনই কোনো কাস্টমার <code>index.html</code>-এ পেমেন্ট ফর্ম সাবমিট করবে, অর্ডারটি সাথে সাথে নিচে পপ-আপ করবে। আসল পেমেন্ট হলে <strong>✓ Approve &amp; Auto-Unlock</strong> চাপুন, আর ভুয়া TrxID হলে <strong>⛔ Reject Fake</strong> চাপুন:
+          </p>
+        </div>
+
+        <!-- Instant Cross-Device TrxID -> Unlock PIN Calculator -->
+        <div class="bg-zinc-950 border border-sky-500/40 rounded-2xl p-3.5 flex flex-wrap items-center gap-2 shrink-0 font-mono text-xs">
+          <div>
+            <span class="text-[10px] text-sky-400 uppercase block font-bold">Cross-Device TrxID &rarr; PIN Calculator</span>
+            <input type="text" id="calc-trx-input" oninput="computeInstantPinUI(this.value)" placeholder="Paste Customer TrxID..." class="mt-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-white uppercase focus:outline-none focus:border-sky-400">
+          </div>
+          <div class="bg-sky-950/80 border border-sky-700 px-3.5 py-2 rounded-xl text-center">
+            <span class="text-[9px] text-sky-300 block uppercase">60s Unlock PIN</span>
+            <strong id="calc-pin-output" class="text-sm text-white">AIS-----</strong>
+          </div>
+          <button type="button" onclick="copyCalculatedPin()" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold px-3 py-2.5 rounded-xl transition">
+            📋 Copy PIN
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Incoming Pending Orders List -->
+      <div id="live-incoming-queue" class="space-y-2.5 font-mono text-xs">
+        <div class="bg-zinc-950/80 border border-zinc-800 rounded-2xl p-4 text-center text-zinc-400">
+          ● Listening live on <code>ais_war_room_sync</code>... Submit an order on <code>index.html</code> to see it appear here in real time!
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 1. LIVE REVENUE PROGRESS HUD & WALLET ALLOCATION (GEM 5 INTEGRATION) -->
+    <section class="glass-card rounded-3xl p-6 sm:p-7 space-y-5">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-5 border-b border-zinc-800">
+        <div>
+          <span class="text-xs font-mono font-bold text-sky-400 uppercase tracking-widest block">AIS War Room Commander (Gem 5 Live Metric)</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-white mt-1">
+            Realized Revenue: <span id="rev-total-disp" class="text-emerald-400 font-mono">৳0</span> 
+            <span class="text-zinc-500 font-normal text-lg sm:text-xl">/ ৳2,00,615 BDT Target</span>
+          </h2>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="quickAddSale('solo')" class="bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold px-3 py-2 rounded-xl transition shadow-lg shadow-blue-600/20">
+            + ৳99 Solo
+          </button>
+          <button onclick="quickAddSale('squad')" class="bg-purple-600 hover:bg-purple-500 text-white font-mono text-xs font-bold px-3 py-2 rounded-xl transition shadow-lg shadow-purple-600/20">
+            + ৳499 Squad
+          </button>
+          <button onclick="quickAddSale('b2b')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-bold px-3 py-2 rounded-xl transition shadow-lg shadow-emerald-600/20">
+            + ৳4,999 B2B
+          </button>
+          <button onclick="exportLedgerCSV()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-mono text-xs font-bold px-3 py-2 rounded-xl transition">
+            Export CSV
+          </button>
+          <button onclick="resetLedger()" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 font-mono text-xs px-2.5 py-2 rounded-xl transition">
+            ↺ Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Progress Bar -->
+      <div class="space-y-1.5">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-zinc-400">Milestone Velocity</span>
+          <span id="rev-pct-disp" class="text-sky-400 font-bold">0.0%</span>
+        </div>
+        <div class="w-full h-3 bg-zinc-950 rounded-full overflow-hidden border border-zinc-800 p-0.5">
+          <div id="rev-progress-bar" class="h-full bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Tier Breakdown Counters -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
+        <div class="bg-black/50 border border-zinc-800/80 rounded-2xl p-4">
+          <div class="flex items-center justify-between text-xs text-zinc-400 mb-1">
+            <span>Solo Passes (৳99)</span>
+            <span id="count-solo" class="text-white font-bold">0 / 260</span>
+          </div>
+          <div class="text-xl font-bold text-white" id="val-solo">৳0</div>
+          <div class="text-[10px] text-zinc-500 mt-1">Quota Target: ৳25,740 BDT</div>
+        </div>
+
+        <div class="bg-black/50 border border-zinc-800/80 rounded-2xl p-4">
+          <div class="flex items-center justify-between text-xs text-zinc-400 mb-1">
+            <span>5-User Squad Passes (৳499)</span>
+            <span id="count-squad" class="text-purple-300 font-bold">0 / 100</span>
+          </div>
+          <div class="text-xl font-bold text-purple-400" id="val-squad">৳0</div>
+          <div class="text-[10px] text-zinc-500 mt-1">Quota Target: ৳49,900 BDT</div>
+        </div>
+
+        <div class="bg-black/50 border border-zinc-800/80 rounded-2xl p-4">
+          <div class="flex items-center justify-between text-xs text-zinc-400 mb-1">
+            <span>Institutional Batches (৳4,999)</span>
+            <span id="count-b2b" class="text-emerald-300 font-bold">0 / 25</span>
+          </div>
+          <div class="text-xl font-bold text-emerald-400" id="val-b2b">৳0</div>
+          <div class="text-[10px] text-zinc-500 mt-1">Quota Target: ৳1,24,975 BDT</div>
+        </div>
+      </div>
+
+      <!-- Financial Safety & MFS Limit Auditor -->
+      <div class="bg-zinc-950/90 border border-zinc-800 rounded-2xl p-4 text-xs font-mono space-y-3">
+        <div class="flex items-center justify-between text-zinc-400 pb-2 border-b border-zinc-800/80">
+          <span class="flex items-center gap-1.5 text-zinc-200 font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Treasury Distribution & MFS Cap Safety (Gem 5 Risk Engine)
+          </span>
+          <span class="text-[11px] text-zinc-500">MFS Daily Cap Alert: ৳30,000 / personal wallet</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-zinc-900/60 p-3 rounded-xl border border-pink-500/30">
+            <span class="text-[10px] text-pink-300 block">bKash Personal (+8801720674268)</span>
+            <strong id="mfs-bkash2" class="text-pink-400 text-base">৳0</strong>
+            <span id="status-bkash2" class="text-[9px] text-emerald-400 block mt-0.5">● Normal (&lt;30k Daily Cap)</span>
+          </div>
+          <div class="bg-zinc-900/60 p-3 rounded-xl border border-orange-500/30">
+            <span class="text-[10px] text-orange-300 block">Nagad Personal (+8801708761298)</span>
+            <strong id="mfs-nagad" class="text-orange-400 text-base">৳0</strong>
+            <span id="status-nagad" class="text-[9px] text-emerald-400 block mt-0.5">● Normal (&lt;30k Daily Cap)</span>
+          </div>
+          <div class="bg-zinc-900/60 p-3 rounded-xl border border-emerald-500/30">
+            <span class="text-[10px] text-emerald-300 block">Trust Bank PLC (00110466000494)</span>
+            <strong id="bank-trust" class="text-emerald-400 text-base">৳0</strong>
+            <span class="text-[9px] text-zinc-400 block mt-0.5">Institutional NPSB / BEFTN</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. UNIFIED WORKSTATIONS (ALL 6 GEMS + PROMPT HUB) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Left Column: Tactical Gem Operations (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- Navigation Tabs between all 6 Gems + Prompt Hub -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scroll font-mono text-xs">
+          <button onclick="selectGem('cinema')" id="tab-gem-cinema" class="py-2 px-3.5 rounded-xl border border-sky-500 bg-sky-500/20 text-white font-bold transition shrink-0 flex items-center gap-1.5">
+            <span>🎬 Gem 6: Cinema</span>
+          </button>
+          <button onclick="selectGem('sales')" id="tab-gem-sales" class="py-2 px-3.5 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 font-bold transition shrink-0 flex items-center gap-1.5">
+            <span>⚡ Gem 2: Sales Closer</span>
+          </button>
+          <button onclick="selectGem('b2b')" id="tab-gem-b2b" class="py-2 px-3.5 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 font-bold transition shrink-0 flex items-center gap-1.5">
+            <span>🏛️ Gem 3: B2B Enterprise</span>
+          </button>
+          <button onclick="selectGem('growth')" id="tab-gem-growth" class="py-2 px-3.5 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 font-bold transition shrink-0 flex items-center gap-1.5">
+            <span>🔥 Gem 1: Viral Growth</span>
+          </button>
+          <button onclick="selectGem('ops')" id="tab-gem-ops" class="py-2 px-3.5 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 font-bold transition shrink-0 flex items-center gap-1.5">
+            <span>📦 Gem 4: Order Ops</span>
+          </button>
+          <button onclick="selectGem('prompts')" id="tab-gem-prompts" class="py-2 px-3.5 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 font-bold transition shrink-0 flex items-center gap-1.5">
+            <span>🧠 Prompt Engine</span>
+          </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- GEM 6 WORKSTATION: Cinematic Creative Director -->
+        <!-- ========================================== -->
+        <div id="workstation-cinema" class="glass-card rounded-3xl p-6 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-widest text-sky-400 block">AIS-G6-CINEMA Persona</span>
+              <h3 class="text-lg font-bold text-white">Cinematic Creative Director & Narrative Architect</h3>
+            </div>
+            <span class="text-xs bg-sky-950 text-sky-300 border border-sky-800 px-2 py-0.5 rounded font-mono">A24 & Fincher Aesthetic</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-mono text-zinc-400 mb-1">Bangladeshi Psychological Archetype</label>
+              <select id="cinema-archetype" onchange="generateCinematicCreative()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 font-mono focus:outline-none focus:border-sky-500">
+                <option value="admission">1. The IBA / DU Admission Fighter (Nilkhet, Mess, Guilt)</option>
+                <option value="bcs">2. The BCS & Gov Aspirant (MP3 Guide, Clock, Facebook Loss)</option>
+                <option value="freelancer">3. The 3:00 AM Remote Freelancer (Mirpur, Upwork, Fog)</option>
+                <option value="private_uni">4. Private Undergrad (NSU/BRACU/IUB, LinkedIn Pressure)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-mono text-zinc-400 mb-1">Creative Deliverable Format</label>
+              <select id="cinema-format" onchange="generateCinematicCreative()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 font-mono focus:outline-none focus:border-sky-500">
+                <option value="reel">script-reel — 45s Shot-by-Shot Fincher Video Script</option>
+                <option value="carousel">carousel-spec — 5-Slide Swiss Editorial Visual Blueprint</option>
+                <option value="story">story-post — Long-Form Viral Narrative Essay (FB/LI)</option>
+                <option value="audio">audio-brief — Sound Engineering & 40Hz Acoustic Brief</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-zinc-400 mb-1">Target Production Tone & Neuroscience Anchor</label>
+            <div class="grid grid-cols-3 gap-2 font-mono text-xs">
+              <label class="bg-zinc-900 border border-zinc-800 rounded-xl p-2 flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="cinema-tone" value="vulnerable" checked onchange="generateCinematicCreative()" class="accent-sky-500">
+                <span class="text-[11px] text-zinc-300">Raw Vulnerability</span>
+              </label>
+              <label class="bg-zinc-900 border border-zinc-800 rounded-xl p-2 flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="cinema-tone" value="clinical" onchange="generateCinematicCreative()" class="accent-sky-500">
+                <span class="text-[11px] text-zinc-300">Clinical Authority</span>
+              </label>
+              <label class="bg-zinc-900 border border-zinc-800 rounded-xl p-2 flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="cinema-tone" value="empowering" onchange="generateCinematicCreative()" class="accent-sky-500">
+                <span class="text-[11px] text-zinc-300">Empowering Armor</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-[11px] font-mono text-zinc-400">Cinematic Master Output</label>
+              <span class="text-[10px] font-mono text-sky-400">Copy-Paste Ready for Production</span>
+            </div>
+            <textarea id="cinema-output" rows="9" class="w-full bg-black/70 border border-zinc-800 rounded-xl p-3 text-xs text-zinc-300 font-mono focus:outline-none focus:border-sky-500 leading-relaxed"></textarea>
+          </div>
+
+          <div class="flex items-center gap-3 pt-1">
+            <button onclick="copyGeneratedCinema()" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-mono text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-sky-600/20 flex items-center justify-center gap-2">
+              <span>📋 Copy Creative Spec</span>
+            </button>
+            <button onclick="sendCinemaToViral()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-mono text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+              <span>⚡ Push to Growth Seeder</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- GEM 2 WORKSTATION: WhatsApp Closer -->
+        <!-- ========================================== -->
+        <div id="workstation-sales" class="glass-card rounded-3xl p-6 space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-widest text-emerald-400 block">AIS-G2-SALES Persona</span>
+              <h3 class="text-lg font-bold text-white">1-Click WhatsApp Instant Closer</h3>
+            </div>
+            <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded font-mono">Live (+8801410761298)</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-mono text-zinc-400 mb-1">Customer Name</label>
+              <input type="text" id="wa-name" placeholder="Ex: Samin Yeasar" oninput="generateWhatsAppReply()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+            </div>
+            <div>
+              <label class="block text-[11px] font-mono text-zinc-400 mb-1">Customer Phone (880...)</label>
+              <input type="text" id="wa-phone" placeholder="01XXXXXXXXX" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-zinc-400 mb-1">Select Trigger State</label>
+            <select id="wa-scenario" onchange="generateWhatsAppReply()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 font-mono focus:outline-none">
+              <option value="verified">/verified — Order Confirmed + 2-Hour ৳499 Squad Upsell</option>
+              <option value="what">/what — Explaining System Value & The 4 Free Tools</option>
+              <option value="followup">/followup — Urgency on ৳99 Early Bird (Last Slots)</option>
+              <option value="squad">/squad — Instructions for 5-User Squad Pass (৳499)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-zinc-400 mb-1">Generated Response</label>
+            <textarea id="wa-output" rows="7" class="w-full bg-black/60 border border-zinc-800 rounded-xl p-3 text-xs text-zinc-300 font-sans focus:outline-none leading-relaxed"></textarea>
+          </div>
+
+          <div class="flex items-center gap-3 pt-1">
+            <button onclick="copyGeneratedWhatsApp()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-mono text-xs font-bold py-2.5 rounded-xl transition">
+              📋 Copy Message
+            </button>
+            <button onclick="launchWhatsAppDirect()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-1.5">
+              <span>🚀 Launch WhatsApp Chat</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- GEM 3 WORKSTATION: B2B Enterprise Pitcher -->
+        <!-- ========================================== -->
+        <div id="workstation-b2b" class="glass-card rounded-3xl p-6 space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-widest text-blue-400 block">AIS-G3-B2B Persona</span>
+              <h3 class="text-lg font-bold text-white">1-Click Institutional B2B Pitch Generator</h3>
+            </div>
+            <span class="text-xs bg-blue-950 text-blue-300 border border-blue-800 px-2 py-0.5 rounded font-mono">৳4,999 Institutional Cohort</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-mono text-zinc-400 mb-1">Org / Club / Batch</label>
+              <input type="text" id="b2b-org" placeholder="Ex: IBA Comm Club" oninput="generateB2BPitch()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white font-mono">
+            </div>
+            <div>
+              <label class="block text-[11px] font-mono text-zinc-400 mb-1">Contact Name</label>
+              <input type="text" id="b2b-contact" placeholder="Ex: President Fahim" oninput="generateB2BPitch()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white font-mono">
+            </div>
+            <div>
+              <label class="block text-[11px] font-mono text-zinc-400 mb-1">Target Email</label>
+              <input type="email" id="b2b-email" placeholder="club@univ.edu" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-zinc-400 mb-1">Institutional Communique</label>
+            <textarea id="b2b-output" rows="8" class="w-full bg-black/60 border border-zinc-800 rounded-xl p-3 text-xs text-zinc-300 font-sans focus:outline-none leading-relaxed"></textarea>
+          </div>
+
+          <div class="flex items-center gap-3 pt-1">
+            <button onclick="copyB2BProposal()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-mono text-xs font-bold py-2.5 rounded-xl transition">
+              📋 Copy Proposal
+            </button>
+            <button onclick="openB2BMailClient()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-blue-600/20">
+              ✉️ Open in Email Client
+            </button>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- GEM 1 WORKSTATION: Viral Seeding Engine -->
+        <!-- ========================================== -->
+        <div id="workstation-growth" class="glass-card rounded-3xl p-6 space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-widest text-amber-400 block">AIS-G1-GROWTH Persona</span>
+              <h3 class="text-lg font-bold text-white">1-Click Viral Community Seeding Engine</h3>
+            </div>
+            <span class="text-xs bg-amber-950 text-amber-300 border border-amber-800 px-2 py-0.5 rounded font-mono">0 BDT Organic Traffic</span>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-zinc-400 mb-1">Select Target Community Format</label>
+            <select id="growth-hook" onchange="generateViralPost()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 font-mono focus:outline-none">
+              <option value="braintax">Post A: The "Beat My Score" Challenge (Student & Admission Groups)</option>
+              <option value="nightowl">Post B: The "Night Owl vs 5:00 AM Club" Hook (University Circles)</option>
+              <option value="screentime">Post C: The "Screen-Time 83 Days Lost" Shock Math (Freelancers/Tech)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-zinc-400 mb-1">Website URL to Seed</label>
+            <input type="text" id="growth-url" value="https://rizumkhanbuilds.netlify.app/" oninput="generateViralPost()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-sky-400 font-mono">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-zinc-400 mb-1">Community Ready Copy</label>
+            <textarea id="growth-output" rows="8" class="w-full bg-black/60 border border-zinc-800 rounded-xl p-3 text-xs text-zinc-300 font-sans focus:outline-none leading-relaxed"></textarea>
+          </div>
+
+          <button onclick="copyViralPost()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-mono text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-amber-600/20">
+            📋 Copy Post for Community Seeding
+          </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- GEM 4 WORKSTATION: Order Dispatch & TrxID -->
+        <!-- ========================================== -->
+        <div id="workstation-ops" class="glass-card rounded-3xl p-6 space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-widest text-purple-400 block">AIS-G4-OPS Persona</span>
+              <h3 class="text-lg font-bold text-white">Order Dispatch & TrxID Verifier</h3>
+            </div>
+            <span class="text-xs bg-purple-950 text-purple-300 border border-purple-800 px-2 py-0.5 rounded font-mono">Security Check</span>
+          </div>
+
+          <form onsubmit="handleManualOrder(event)" class="space-y-3 font-mono text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="text-zinc-400 block mb-1">Customer Full Name</label>
+                <input type="text" id="ord-name" required placeholder="Name" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white">
+              </div>
+              <div>
+                <label class="text-zinc-400 block mb-1">Customer Email</label>
+                <input type="email" id="ord-email" required placeholder="email@gmail.com" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="text-zinc-400 block mb-1">Tier Purchased</label>
+                <select id="ord-tier" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-zinc-200">
+                  <option value="solo">Solo Pass (৳99)</option>
+                  <option value="squad">Squad Pass (৳499)</option>
+                  <option value="b2b">Institutional (৳4,999)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-zinc-400 block mb-1">Payment Method</label>
+                <select id="ord-method" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-zinc-200">
+                  <option value="bkash2">bKash (+8801720674268)</option>
+                  <option value="nagad">Nagad (+8801708761298)</option>
+                  <option value="trust">Trust Bank (00110466000494)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-zinc-400 block mb-1">TrxID / Reference</label>
+                <input type="text" id="ord-trx" required placeholder="Ex: BL47X909A" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-white uppercase">
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-purple-600/20">
+              ✓ Log Transaction & Generate Fulfillment Payload
+            </button>
+          </form>
+
+          <div id="ops-log-output" class="hidden bg-black/70 border border-zinc-800 rounded-xl p-3 text-xs font-mono text-zinc-300 space-y-2">
+            <span class="text-emerald-400 font-bold block">● ORDER VERIFIED & LOGGED TO TREASURY</span>
+            <div id="ops-dispatch-msg" class="text-[11px] text-zinc-400"></div>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SYSTEM PROMPT HUB: Inspect & Copy Prompts -->
+        <!-- ========================================== -->
+        <div id="workstation-prompts" class="glass-card rounded-3xl p-6 space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-widest text-sky-400 block">AIS System Intelligence Hub</span>
+              <h3 class="text-lg font-bold text-white">Full AI Gem System Prompts</h3>
+            </div>
+            <span class="text-xs bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded font-mono">6 Agents</span>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-zinc-400 mb-1">Select Gem to Inspect / Deploy</label>
+            <select id="prompt-select" onchange="renderPromptView()" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 font-mono focus:outline-none">
+              <option value="gem6">Gem 6: AIS-G6-CINEMA (Cinematic Creative Director)</option>
+              <option value="gem1">Gem 1: AIS-G1-GROWTH (Tactical Ad & Viral Media)</option>
+              <option value="gem2">Gem 2: AIS-G2-SALES (WhatsApp Conversion Closer)</option>
+              <option value="gem3">Gem 3: AIS-G3-B2B (Institutional Deal Architect)</option>
+              <option value="gem4">Gem 4: AIS-G4-OPS (Fintech Reconciliation & Dispatch)</option>
+              <option value="gem5">Gem 5: AIS-G5-EXEC (War Room Commander & Treasury)</option>
+            </select>
+          </div>
+
+          <div>
+            <textarea id="prompt-content-view" rows="9" readonly class="w-full bg-black/70 border border-zinc-800 rounded-xl p-3 text-xs text-zinc-300 font-mono focus:outline-none leading-relaxed"></textarea>
+          </div>
+
+          <button onclick="copyActivePrompt()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-mono text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-sky-600/20">
+            📋 Copy Complete System Prompt for Custom GPT / Custom Gem
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Treasury Endpoints & Live Transaction Feed (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- Quick Payment Credentials Panel -->
+        <div class="glass-card rounded-3xl p-6 space-y-3.5">
+          <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-sky-400">Official Treasury (1-Click Copy)</h3>
+            <span class="text-[10px] text-zinc-500 font-mono">SYS-AIS Matrix</span>
+          </div>
+
+          <div class="space-y-2 font-mono text-xs">
+            <div class="flex items-center justify-between bg-zinc-900/90 border border-pink-500/30 p-3 rounded-xl">
+              <div>
+                <span class="text-[10px] text-pink-300 block">bKash Personal (Send Money Only)</span>
+                <strong class="text-pink-400 text-sm">+8801720674268</strong>
+              </div>
+              <button onclick="copyNumber('01720674268', 'bKash Personal')" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 py-1 rounded text-[11px] transition">Copy</button>
+            </div>
+
+            <div class="flex items-center justify-between bg-zinc-900/90 border border-orange-500/30 p-3 rounded-xl">
+              <div>
+                <span class="text-[10px] text-orange-300 block">Nagad Personal (Send Money Only)</span>
+                <strong class="text-orange-400 text-sm">+8801708761298</strong>
+              </div>
+              <button onclick="copyNumber('01708761298', 'Nagad Personal')" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 py-1 rounded text-[11px] transition">Copy</button>
+            </div>
+
+            <div class="flex items-center justify-between bg-zinc-900/90 border border-emerald-500/30 p-3 rounded-xl">
+              <div>
+                <span class="text-[10px] text-emerald-300 block">Trust Bank PLC (Institutional)</span>
+                <strong class="text-emerald-400 text-sm">00110466000494</strong>
+              </div>
+              <button onclick="copyNumber('00110466000494', 'Trust Bank A/C')" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 py-1 rounded text-[11px] transition">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Orders Ledger Table -->
+        <div class="glass-card rounded-3xl p-6 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-white">Live Transactions Log</h3>
+            <span id="log-count-badge" class="text-[10px] bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded font-mono">0 recorded</span>
+          </div>
+
+          <div class="max-h-60 overflow-y-auto custom-scroll space-y-2" id="ledger-table">
+            <div class="text-center py-8 text-zinc-600 font-mono text-xs">
+              No transactions logged yet. Use the quick buttons or order form above.
+            </div>
+          </div>
+        </div>
+
+        <!-- 48-Hour Execution Protocol Checklist (Gem 5) -->
+        <div class="glass-card rounded-3xl p-6 space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <h3 class="font-bold uppercase tracking-wider text-sky-400">48-Hour Sprint Checklist</h3>
+            <span class="text-[10px] text-zinc-500">Milestones</span>
+          </div>
+          <div class="space-y-2 text-zinc-400">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="chk-1" onchange="saveChecklist()" class="accent-sky-500">
+              <span>H 00–06: 500 BDT Meta Ad Live + 10 Group Posts</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="chk-2" onchange="saveChecklist()" class="accent-sky-500">
+              <span>H 06–18: First 50 Solo Passes Closed on WhatsApp</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="chk-3" onchange="saveChecklist()" class="accent-sky-500">
+              <span>H 18–30: 100 B2B Club Outreach Mails Dispatched</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="chk-4" onchange="saveChecklist()" class="accent-sky-500">
+              <span>H 30–42: 25 B2B Batches Closed via Bank Transfer</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="chk-5" onchange="saveChecklist()" class="accent-sky-500">
+              <span>H 42–48: Squad Upgrade Follow-ups + ৳2,00,000 Milestone</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- 3. INTERACTIVE B2B LEAD OUTREACH CRM & AIS FACEBOOK PAGE CONTENT CALENDAR -->
+    <section class="glass-card rounded-3xl p-6 sm:p-7 space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-zinc-800">
+        <div>
+          <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest block">Co-Founder Lead CRM &amp; Social Media Engine</span>
+          <h2 class="text-xl sm:text-2xl font-black text-white mt-0.5">
+            University Club B2B Pipeline (৳4,999 Cohort) &amp; AIS Facebook Page Studio
+          </h2>
+        </div>
+        <div class="flex items-center gap-2 font-mono text-xs">
+          <button type="button" onclick="copyFbCalendarPost(1)" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2 rounded-xl transition">📋 FB Post #1 (Shock Hook)</button>
+          <button type="button" onclick="copyFbCalendarPost(2)" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-2 rounded-xl transition">📋 FB Post #2 (2:15 AM Story)</button>
+          <button type="button" onclick="copyFbCalendarPost(3)" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-2 rounded-xl transition">📋 FB Post #3 (28s Video Script)</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 font-mono text-xs" id="b2b-crm-grid">
+      </div>
+    </section>
+  </main>
+
+  <!-- Sticky Global Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-zinc-900 border border-zinc-700 text-white text-xs px-4 py-2.5 rounded-xl shadow-2xl opacity-0 pointer-events-none transition-all duration-300 font-mono z-50">
+    Copied
+  </div>
+
+  <!-- APPLICATION LOGIC & GEM SYSTEM ENGINES -->
+  <script>
+    const TARGET_BDT = 200615;
+
+    let state = {
+      total: 0,
+      soloCount: 0,
+      squadCount: 0,
+      b2bCount: 0,
+      wallets: {
+        bkash2: 0,
+        nagad: 0,
+        trust: 0
+      },
+      orders: [],
+      checks: [false, false, false, false, false]
+    };
+
+    // Load from LocalStorage
+    try {
+      const saved = localStorage.getItem('ais_war_room_state_v3');
+      if (saved) {
+        state = JSON.parse(saved);
+      }
+    } catch (e) {
+      console.warn("Storage restricted.");
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('ais_war_room_state_v3', JSON.stringify(state));
+      } catch (e) {}
+      renderDashboard();
+    }
+
+    function renderDashboard() {
+      // 1. Progress Bar & Total
+      document.getElementById('rev-total-disp').innerText = '৳' + state.total.toLocaleString();
+      const pct = Math.min(100, ((state.total / TARGET_BDT) * 100)).toFixed(1);
+      document.getElementById('rev-pct-disp').innerText = pct + '%';
+      document.getElementById('rev-progress-bar').style.width = pct + '%';
+
+      // 2. Counters
+      document.getElementById('count-solo').innerText = `${state.soloCount} / 260`;
+      document.getElementById('val-solo').innerText = '৳' + (state.soloCount * 99).toLocaleString();
+
+      document.getElementById('count-squad').innerText = `${state.squadCount} / 100`;
+      document.getElementById('val-squad').innerText = '৳' + (state.squadCount * 499).toLocaleString();
+
+      document.getElementById('count-b2b').innerText = `${state.b2bCount} / 25`;
+      document.getElementById('val-b2b').innerText = '৳' + (state.b2bCount * 4999).toLocaleString();
+
+      // 3. Wallets & Limits Auditor
+      
+      document.getElementById('mfs-bkash2').innerText = '৳' + state.wallets.bkash2.toLocaleString();
+      document.getElementById('mfs-nagad').innerText = '৳' + state.wallets.nagad.toLocaleString();
+      
+      document.getElementById('bank-trust').innerText = '৳' + state.wallets.trust.toLocaleString();
+
+      
+      auditLimit('status-bkash2', state.wallets.bkash2);
+      auditLimit('status-nagad', state.wallets.nagad);
+
+      // 4. Checklist restore
+      if (state.checks) {
+        for (let i = 0; i < 5; i++) {
+          const el = document.getElementById(`chk-${i+1}`);
+          if (el) el.checked = !!state.checks[i];
+        }
+      }
+
+      // 5. Ledger Render
+      const ledger = document.getElementById('ledger-table');
+      document.getElementById('log-count-badge').innerText = `${state.orders.length} recorded`;
+      if (state.orders.length === 0) {
+        ledger.innerHTML = `<div class="text-center py-8 text-zinc-600 font-mono text-xs">No transactions logged yet. Use the quick buttons or order form above.</div>`;
+      } else {
+        ledger.innerHTML = state.orders.slice(-15).reverse().map(o => `
+          <div class="bg-zinc-900/80 border border-zinc-800 p-2.5 rounded-xl flex items-center justify-between text-xs font-mono">
+            <div>
+              <span class="text-white font-bold block">${o.name}</span>
+              <span class="text-zinc-500 text-[10px]">${o.tier.toUpperCase()} • ${o.method.toUpperCase()} • Trx: ${o.trx}</span>
+            </div>
+            <span class="text-emerald-400 font-bold">+৳${o.amount}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function auditLimit(elementId, amount) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      if (amount >= 30000) {
+        el.className = "text-[9px] text-crimson font-bold block mt-0.5 animate-pulse";
+        el.innerText = "⚠️ LIMIT ALERT (>30k)";
+      } else if (amount >= 20000) {
+        el.className = "text-[9px] text-amber-400 block mt-0.5";
+        el.innerText = "● Caution (>20k)";
+      } else {
+        el.className = "text-[9px] text-emerald-400 block mt-0.5";
+        el.innerText = "● Normal (<30k)";
+      }
+    }
+
+    function quickAddSale(tier) {
+      let amount = 99;
+      let method = 'bkash1';
+
+      if (tier === 'solo') {
+        state.soloCount++;
+        amount = 99;
+        method = 'bkash2';
+      } else if (tier === 'squad') {
+        state.squadCount++;
+        amount = 499;
+        method = (state.squadCount % 2 === 0) ? 'nagad' : 'bkash2';
+      } else if (tier === 'b2b') {
+        state.b2bCount++;
+        amount = 4999;
+        method = 'trust';
+      }
+
+      state.total += amount;
+      state.wallets[method] += amount;
+
+      state.orders.push({
+        name: `Quick Sale #${state.orders.length + 1}`,
+        tier,
+        amount,
+        method,
+        trx: 'MANUAL_' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+        time: new Date().toLocaleTimeString()
+      });
+
+      saveState();
+      showToast(`Logged +৳${amount} (${tier.toUpperCase()})`);
+    }
+
+    function saveChecklist() {
+      state.checks = [
+        document.getElementById('chk-1').checked,
+        document.getElementById('chk-2').checked,
+        document.getElementById('chk-3').checked,
+        document.getElementById('chk-4').checked,
+        document.getElementById('chk-5').checked
+      ];
+      saveState();
+    }
+
+    function resetLedger() {
+      state = {
+        total: 0,
+        soloCount: 0,
+        squadCount: 0,
+        b2bCount: 0,
+        wallets: { bkash2: 0, nagad: 0, trust: 0 },
+        orders: [],
+        checks: [false, false, false, false, false]
+      };
+      saveState();
+      showToast("Ledger reset to zero.");
+    }
+
+    function exportLedgerCSV() {
+      if (state.orders.length === 0) {
+        showToast("No orders to export yet.");
+        return;
+      }
+      let csv = "Name,Email,Tier,Amount,Method,TrxID,Time\n";
+      state.orders.forEach(o => {
+        csv += `"${o.name}","${o.email || ''}","${o.tier}",${o.amount},"${o.method}","${o.trx}","${o.time}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', `AIS_War_Room_Orders_${new Date().toISOString().slice(0,10)}.csv`);
+      a.click();
+      showToast("Ledger exported as CSV!");
+    }
+
+    // Workstation Tab Switcher
+    function selectGem(gem) {
+      const gems = ['cinema', 'sales', 'b2b', 'growth', 'ops', 'prompts'];
+      gems.forEach(g => {
+        document.getElementById(`workstation-${g}`).classList.add('hidden');
+        const tab = document.getElementById(`tab-gem-${g}`);
+        if (tab) {
+          tab.classList.remove('border-sky-500', 'bg-sky-500/20', 'text-white');
+          tab.classList.add('border-zinc-800', 'bg-zinc-900', 'text-zinc-400');
+        }
+      });
+
+      document.getElementById(`workstation-${gem}`).classList.remove('hidden');
+      const activeTab = document.getElementById(`tab-gem-${gem}`);
+      if (activeTab) {
+        activeTab.classList.remove('border-zinc-800', 'bg-zinc-900', 'text-zinc-400');
+        activeTab.classList.add('border-sky-500', 'bg-sky-500/20', 'text-white');
+      }
+    }
+
+    // ==========================================
+    // GEM 6: CINEMATIC CREATIVE ENGINE
+    // ==========================================
+    const cinemaArchetypeData = {
+      admission: {
+        title: "The IBA / DU Admission Fighter",
+        room: "Dhanmondi / Nilkhet mess, photocopy guides, cold tea in disposable plastic cup, squeaking old ceiling fan",
+        terror: "My parents gave up everything for my coaching fee. What if I am hollow inside?",
+        scriptVO: "রাত পৌনে তিনটা। আপনি জানেন কাল সকালে আপনার ক্লাস আছে... অথবা কোচিংয়ের এক্সাম... অথবা একটা পুরো পরিবারের স্বপ্ন অপেক্ষা করছে। কিন্তু আপনার আঙুলটা থামছে না। আরেকটা রিল... আরেকটা ভিডিও। ভেতরে একটা অদ্ভুত অবশ ভাব, আর তার ঠিক নিচেই এক পাহাড় অপরাধবোধ।",
+        b2bAngle: "University Admission Batches & Executive Committees",
+        metric: "UT Austin Fluid Intelligence Loss (-20.4%)"
+      },
+      bcs: {
+        title: "The BCS & Gov Job Aspirant",
+        room: "Nilkhet MP3 Guide stack, worn out diary, plastic ticking desk clock, yellow earplugs",
+        terror: "Youth is slipping away. Another circular is expiring, and today was completely lost to Facebook scrolling.",
+        scriptVO: "আজও আপনি পড়তে বসেছিলেন সকাল ৯টায়। টেবিলের সামনে MP3 গাইড খোলা ছিল ৮ ঘণ্টা। কিন্তু আসল পড়াশোনা হয়েছে মাত্র ৩০ মিনিট। বাকিটা সময় উবে গেছে নোটিফিকেশন আর সোশ্যাল মিডিয়ার চোরাবালিতে। আর দিনশেষে বালিশে মুখ গুঁজে মনে হচ্ছে—আমার আর হলো না।",
+        b2bAngle: "BCS & Gov Job Academy Cohorts",
+        metric: "Salience Network Subconscious Hijacking"
+      },
+      freelancer: {
+        title: "The 3:00 AM Remote Freelancer",
+        room: "Dual budget monitors in Mirpur, Upwork tab open, empty energy drink can, glowing vape light",
+        terror: "I earn in USD, but my head is permanently in fog. I am running on borrowed biological time.",
+        scriptVO: "আপনি ডলার আয় করছেন, ক্লায়েন্টের ডেডলাইন মেটাচ্ছেন। কিন্তু মাথার ভেতরে সারাক্ষণ একটা ঘন কুয়াশা। ৩ মিনিট একটা জটিল কোড বা ডিজাইনে ফোকাস করতে পারেন না। আপনি অলস নন। অ্যালগরিদম আপনার প্রিফ্রন্টাল কর্টেক্সকে জ্বালিয়ে পুড়িয়ে ছারখার করে দিচ্ছে।",
+        b2bAngle: "Software Agencies & Remote Developer Collectives",
+        metric: "Prefrontal Cortex Glucose Depletion (-40%)"
+      },
+      private_uni: {
+        title: "The Private Univ Undergrad (NSU/BRACU/IUB)",
+        room: "MacBook with stickers, cold brew mug, unread 60-page PDF assignment, gym bag in corner",
+        terror: "Everyone on LinkedIn is a founder, strategist, or intern, and I cannot read 10 pages without reaching for my phone.",
+        scriptVO: "লিঙ্কডইনে ঢুকলেই মনে হয় সবাই এগিয়ে যাচ্ছে—সবাই সিইও, ইন্টার্ন বা অ্যাচিভার। আর আপনি ১০ পৃষ্ঠার একটা অ্যাসাইনমেন্ট পড়তে বসে ৫ বার ইন্সটাগ্রাম চেক করছেন। আপনি পিছিয়ে পড়েননি। আপনার মনোযোগ কারো কোটি ডলারের বিজ্ঞাপনের সস্তা কাঁচামাল হয়ে গেছে।",
+        b2bAngle: "Private University Student Clubs & Societies",
+        metric: "Context Switching Attentive Penalty (+138%)"
+      }
+    };
+
+    function generateCinematicCreative() {
+      const archKey = document.getElementById('cinema-archetype').value;
+      const format = document.getElementById('cinema-format').value;
+      const tone = document.querySelector('input[name="cinema-tone"]:checked')?.value || 'vulnerable';
+      const arch = cinemaArchetypeData[archKey];
+      const output = document.getElementById('cinema-output');
+
+      if (format === 'reel') {
+        output.value = `[AIS-G6 PRODUCTION SPECIFICATION]
+PROJECT: ${arch.title.toUpperCase()} (CINEMATIC REEL)
+DURATION: 45 SECONDS | FORMAT: 9:16 VERTICAL
+COLOR GRADE: David Fincher Mood. Cold cyan rim lighting, moody tungsten lamp, shallow depth of field (f/1.8).
+ACOUSTIC FREQUENCY: Master 40Hz Gamma sine layer @ -24dB beneath dialogue.
+TONE CALIBRATION: ${tone.toUpperCase()}
+
+[0:00 - 0:06]
+VISUAL: Extreme macro close-up on dilated pupil in total darkness. Cornea reflects flickering, rapid digital light. Quick cuts: thumb flick, endless feed blur.
+LIGHTING: 0% ambient. 100% cold 6500K blue screen illumination.
+FOLEY: Soft repetitive tactile swipe. Distant Dhaka city dogs barking far away in background.
+VOICEOVER (Deep, intimate, textured Bengali whisper):
+"${arch.scriptVO}"
+
+[0:06 - 0:16]
+VISUAL: Slow tracking shot behind character sitting on edge of bed. Room texture: ${arch.room}. Unread books lying open like cold corpses.
+LIGHTING: Streetlight bleeding through iron window grills casting jail-bar shadows across the floor.
+FOLEY: Tired, heavy human exhale. The metallic squeak of an old ceiling fan.
+VOICEOVER:
+"নিজেকে দোষ দেওয়া বন্ধ করুন। আপনি অলস বা অপদার্থ নন। বিশ্বের সবচেয়ে ধনী কোম্পানিগুলোর হাজার হাজার নিউরোসায়েন্টিস্ট আপনার ব্রেইনের Salience Network-কে এমনভাবে হ্যাক করেছে যেন আপনি কখনোই স্থির হতে না পারেন।"
+
+[0:16 - 0:28]
+VISUAL: The character places the phone face down on the desk. Dynamic clinical text overlays lock onto the phone: "${arch.metric}", "Prefrontal Working Memory: -20.4%".
+LIGHTING: Abrupt cut to stark, minimalist dark-mode clinical contrast.
+FOLEY: High-frequency digital tinnitus ringing, abruptly terminated by a heavy sub-bass cinematic hit.
+VOICEOVER (Authoritative, clinical):
+"UT Austin ও UC Berkeley-এর গবেষণা প্রমাণ করেছে—ফোন বন্ধ করে ডেস্কে রাখলেও ব্রেইনের আইকিউ ২০.৪% ড্রপ করে। উইলপাওয়ার দিয়ে এই যুদ্ধ জেতা অসম্ভব। এর জন্য দরকার নিউরো-আর্কিটেকচার।"
+
+[0:28 - 0:38]
+VISUAL: Smooth, luxury montage of the AERA COGNITIVE interface:
+1. 60-Second Brain Tax stopwatch hitting red (+138%).
+2. 40Hz Gamma Audio visualizer pulsing in emerald green.
+3. Turnkey Notion Command Center with daily deep work ledger.
+FOLEY: 40Hz acoustic gamma hum swells gracefully, washing away all tension into pure crystalline focus.
+VOICEOVER:
+"Army IBA Specialist (AIS) নিয়ে এলো AERA COGNITIVE—The Neural Reset Protocol™। ওয়েবসাইটে এখনই ফ্রিতে টেস্ট করুন আপনার ব্রেইন ট্যাক্স আর অন করুন 40Hz ফোকাস অডিও।"
+
+[0:38 - 0:45]
+VISUAL: Character places phone inside closed desk drawer. Picks up a metal fountain pen. Upright, dignified posture.
+ON-SCREEN TYPOGRAPHY:
+AERA COGNITIVE (SYS-AIS)
+৪টি ফ্রি নিউরো-টুল • ফুল প্রটোকল মাত্র ৳৯৯
+🔗 Link in Bio
+FOLEY: Solid wood drawer closing with a heavy mechanical click. Pen cap opening.
+VOICEOVER:
+"আপনার মনোযোগ কারও বিজ্ঞাপনের কাঁচামাল নয়। নিজের নিয়ন্ত্রণ ফিরিয়ে নিন। বায়ো লিংকে ক্লিক করুন।"`;
+      } else if (format === 'carousel') {
+        output.value = `[AIS-G6 EDITORIAL INFOGRAPHIC BLUEPRINT]
+TOPIC: THE ANATOMY OF ATTENTION HIJACK (${arch.title.toUpperCase()})
+DESIGN LANGUAGE: Swiss Minimalist Editorial. Obsidian Black (#050608), Cobalt Blue (#2563EB), Crisp Stark Typography.
+
+SLIDE 1 (COVER - PATTERN INTERRUPT):
+[01/05] SYS-AIS R&D COGNITIVE REPORT
+HEADLINE: কেন পড়ার টেবিলে ফোন উল্টো করে রাখা থাকলেও আইকিউ ২০.৪% কমে যায়?
+VISUAL SPEC: Minimalist vector of an iPhone lying face down on a wooden desk. Concentric radioactive-style cyan shockwaves radiate directly into a human skull silhouette.
+SUBTEXT: Research: UT Austin Fluid Intelligence Study.
+BOTTOM: Swipe to understand the biological mechanism ───>
+
+SLIDE 2 (THE BIOLOGICAL MECHANISM):
+[02/05] SALIENCE RADAR DISRUPTION
+HEADLINE: The Salience Network: ব্রেইনের অদৃশ্য সাবকনশাস রেডার
+BULLETS:
+• আপনার কনশাস মন হয়তো বইয়ের পাতার দিকে তাকিয়ে আছে।
+• কিন্তু সাবকনশাসলি ব্রেইনের Salience Network প্রতি সেকেন্ডে ফোনের দিকে নজর রাখছে: "কোনো নোটিফিকেশন আসলো কি?"
+DATA GRAPH:
+Prefrontal Glucose: [████████░░░░░] -40% Drained
+Working Memory:     [██████░░░░░░░] -20.4% Loss
+
+SLIDE 3 (THE BIOLOGICAL ARCHETYPE DEBUNK):
+[03/05] NOBEL MEDICINE 2017
+HEADLINE: ভোর ৫:০০ এএম ক্লাবের মিথ্যা বনাম আপনার আসল জেনেটিক্স
+CONTEXT: ${arch.terror}
+DATA BOX:
+• Biphasic (65% মানুষ): সকাল ১০:৩০ এবং সন্ধ্যা ৭:০০ দুটি পিক ফোকাস উইন্ডো।
+• Night Owl (15% মানুষ): রাত ৮:০০ থেকে ১২:০০ হাইপার-পিক ফোকাস।
+TAKEAWAY: ভোর ৫টায় জোর করে উঠলে নাইট আউলরা কর্টিসোল ক্র্যাশে পড়ে সারাদিন ব্রেইন ফগে কাটায়।
+
+SLIDE 4 (THE 60-SECOND DESK PROTOCOL):
+[04/05] TACTICAL PROTOCOL
+HEADLINE: আজ পড়ার টেবিলে বসার আগে ৩টি নন-নেগোশিয়েবল রুল
+1. THE DRAWER LOCK: ফোন দৃষ্টিসীমার বাইরে অন্য ঘরে বা ড্রয়ারে বন্ধ রাখুন।
+2. THE 60S NEURAL PAUSE: ক্রেভিং উঠলে ৪ বার দীর্ঘ নিঃশ্বাস ফেলুন (৪ সে. শ্বাস নিন, ৭ সে. ছাড়ুন)।
+3. 40HZ AUDIO ANCHOR: পড়ার সময় ব্যাকগ্রাউন্ডে ৪০ হার্টজ গামা অডিও বাজান।
+
+SLIDE 5 (THE ACTION CTA):
+[05/05] SYS-AIS COHORT ENROLLMENT
+HEADLINE: পড়ার টেবিলে আপনার ফোকাস ১০০% ফিরিয়ে আনতে
+DELIVERABLES:
+✅ ৪টি সম্পূর্ণ ফ্রি সায়েন্টিফিক টুল (টেস্ট, ক্যালকুলেটর, অডিও, রুটিন)
+✅ রেডিমেড Notion Command Center + 3M Tracker
+✅ ১ পাতার Printable Desk Anchor Card
+OFFER: লঞ্চ উপলক্ষে মাত্র ৳৯৯ BDT (প্রথম ১০০ জনের জন্য)
+LINK: বায়ো লিংকে ক্লিক করে এখনই ফ্রি ব্রেইন গেমটি টেস্ট করুন।`;
+      } else if (format === 'story') {
+        output.value = `[AIS-G6 LONG-FORM EMOTIONAL ESSAY]
+FOR: FACEBOOK VIRAL & LINKEDIN ARTICLE
+TARGET: ${arch.title.toUpperCase()}
+TONE: Deeply Poignant, Vulnerable, Scientifically Empowering
+
+রাত ৩:১৪। 
+ঘরটা অন্ধকার। শুধু আপনার হাতের ৬ ইঞ্চির স্ক্রিন থেকে একটা ঠান্ডা নীল আলো আপনার চোখের ক্লান্ত মণিতে এসে পড়ছে।
+
+আপনি জানেন কাল সকালে আপনার ক্লাস আছে, কিংবা অ্যাসাইনমেন্টের ডেডলাইন, অথবা কয়েক মাস পর সেই পরীক্ষাটি—যার ওপর আপনার পুরো ভবিষ্যৎ আর পরিবারের আত্মত্যাগ নির্ভর করছে।
+
+তবুও আপনার বৃদ্ধাঙ্গুলি থামছে না।
+আরেকটা রিল। আরেকটা ভিডিও। আরেকটা পোস্ট। 
+
+ভেতরে একটা অদ্ভুত অসাড় ভাব, আর তার ঠিক নিচেই জমাট বাঁধা এক পাহাড় অপরাধবোধ। আপনি ভাবছেন—"আমার দ্বারা বোধহয় আর কিছুই হবে না। আমি একটা আস্ত অপদার্থ।"
+
+আজ আপনাকে একটা অপ্রিয় বৈজ্ঞানিক সত্য বলি:
+আপনি অলস নন। আপনি চরিত্রহীন বা দুর্বল নন।
+
+সমস্যা হচ্ছে, পৃথিবীর সবচেয়ে ধনী টেক জায়ান্টগুলোর হাজার হাজার সেরা নিউরোসায়েন্টিস্ট আপনার ব্রেইনের ডোপামিন সার্কিট আর Salience Network-কে এমন নিখুঁতভাবে হ্যাক করেছে, যেন আপনার স্বাভাবিক উইলপাওয়ার কোনো কাজেই না আসে। 
+
+UT Austin-এর একটি বিখ্যাত গবেষণায় দেখা গেছে, পড়ার টেবিলে ফোন বন্ধ করে উল্টো করে রাখলেও মানুষের ফ্লুইড ইন্টেলিজেন্স ২০.৪% কমে যায়। কারণ আপনার অবচেতন ব্রেইন সারাক্ষণ সজাগ থাকে।
+
+উইলপাওয়ার দিয়ে কোনোদিন এই অ্যালগরিদমের সাথে জেতা যায় না। এর জন্য দরকার সুনির্দিষ্ট নিউরো-আর্কিটেকচার।
+
+Army IBA Specialist (AIS)-এর রিসার্চ উইং থেকে আমরা উন্মুক্ত করেছি:
+AERA COGNITIVE — The Neural Reset Protocol™
+
+আমরা কোনো মোটিভেশন বিক্রি করি না। আমাদের ওয়েবসাইটে ৪টি ফ্রি সায়েন্টিফিক ডায়াগনস্টিক টুল দিয়ে আপনি নিজেই পরীক্ষা করে দেখতে পারবেন আপনার মনোযোগের অবস্থা:
+১. ৬০-সেকেন্ডের ব্রেইন ট্যাক্স গেম (নিজে দেখুন মাল্টিটাস্কিং ব্রেইনকে কত স্লো করে)
+২. স্ক্রিন-টাইম লাইফ লস ক্যালকুলেটর
+৩. ব্রাউজারে শোনার মতো 40Hz গামা ফোকাস সাউন্ড
+৪. ২০১৭ সালের নোবেলজয়ী ক্রোনোটাইপ রুটিন ম্যাপার
+
+আর ফোন আসক্তি স্থায়ীভাবে দূর করে প্রতিদিন ৩-৪ ঘণ্টা নির্ভেজাল ডিপ ফোকাসে কাজ করার জন্য রয়েছে আমাদের ফুল রেডিমেড Notion Command Center ও ১ পাতার Printable Desk Card।
+
+আজকের লঞ্চ অফারে মাত্র ৳৯৯ টাকায় (এক কাপ কফির চেয়েও কম খরচে) নিজের ব্রেইনের নিয়ন্ত্রণ ফিরিয়ে নিন।
+
+আপনার বাবার স্বপ্ন, আপনার ক্যারিয়ার আর আপনার আত্মমর্যাদা—কোনোটিই সস্তা নয়।
+
+👉 কমেন্টে বা বায়োতে দেওয়া লিংকে ক্লিক করে এখনই ফ্রি টেস্ট দিয়ে নিজের স্কোর দেখুন:
+https://rizumkhanbuilds.netlify.app/`;
+      } else if (format === 'audio') {
+        output.value = `[AIS-G6 ACOUSTIC & SOUND SPECIFICATION]
+TARGET TRACK: "THE NEURAL SHIELD" (FOR REEL/DOC BACKGROUND)
+SAMPLE RATE: 48kHz / 24-bit | MASTER PEAK: -1.0 dBFS | LUFS: -14 LUFS
+
+1. VOICEOVER DIRECTIVES:
+• Speaker: Warm, resonant baritone.
+• Proximity Effect: 5 cm from large-diaphragm condenser microphone.
+• Acoustic Space: Completely dry (0% church reverb, treated vocal booth).
+• Speaking Cadence: 115 - 120 words per minute. Pacing must be slow, intimate, unhurried.
+
+2. SUB-AUDIBLE MASTER FREQUENCY:
+• Embed a clean 40Hz pure sine wave tone at -24 dB underneath the dialogue.
+• Purpose: Subconscious neuro-electrical gamma phase locking in listeners wearing headphones.
+
+3. FOLEY LAYERING (DHAKA SENSORY FIELD):
+• Layer A (Ambient): High-pass filtered sound of distant midnight rain hitting aluminum roofing in Dhanmondi.
+• Layer B (Mechanical): Subdued ticking of an analog desk clock (60 BPM matching resting heart rate).
+• Layer C (Impact): Heavy acoustic drop when transitioning from guilt to clinical neuroscience.
+• Layer D (Resolution): Crisp, solid wooden drawer click when phone is parked away at the climax.`;
+      }
+    }
+
+    function copyGeneratedCinema() {
+      copySafe(document.getElementById('cinema-output').value);
+      showToast("Cinematic creative spec copied!");
+    }
+
+    function sendCinemaToViral() {
+      selectGem('growth');
+      document.getElementById('growth-output').value = document.getElementById('cinema-output').value;
+      showToast("Creative pushed to Growth Seeder!");
+    }
+
+    // ==========================================
+    // GEM 2: WHATSAPP CLOSER
+    // ==========================================
+    function generateWhatsAppReply() {
+      const scenario = document.getElementById('wa-scenario').value;
+      const name = document.getElementById('wa-name').value.trim() || 'ভাই';
+      const output = document.getElementById('wa-output');
+
+      if (scenario === 'verified') {
+        output.value = `অভিনন্দন ${name}! আপনার পেমেন্ট সফলভাবে ভেরিফাইড হয়েছে (SYS-AIS Order Confirmed) ✅\n\nআপনার AERA COGNITIVE - The Neural Reset Protocol™ নিচের অফিসিয়াল লিংকে প্রস্তুত:\n\n১. Notion Command Center (উপরে ডানদিকের 'Duplicate' বাটনে ক্লিক করে নোশনে নিন):\n👉 https://www.notion.so/AERA-COGNITIVE-Neural-Reset-Protocol-SYS-AIS-Command-Center-405e21c534848031b982d690d7d2c754\n\n২. 60-Second Desk Anchor PDF: ওয়েবসাইটের ভেরিফিকেশন পেইজে থাকা ডাউনলোড বাটনে ক্লিক করে সেভ বা প্রিন্ট করে নিন।\n\n🔥 AIS SQUAD UPGRADE (শুধুমাত্র আগামী ২ ঘণ্টার জন্য):\nআপনি যদি আপনার ৪ জন বন্ধু বা রুমমেটকে একসাথে অনবোর্ড করাতে চান, তবে মাত্র অতিরিক্ত ৳৪০০ Send Money করে (bKash: +8801720674268 / Nagad: +8801708761298) আপনার পাসটি 5-User Squad Pass-এ আপগ্রেড করতে পারেন!`;
+      } else if (scenario === 'what') {
+        output.value = `আসসালামু আলাইকুম ${name}! খুব সহজ ভাষায় বলছি:\n\nপড়তে বসলে বারবার ফোন চেক করার কারণে আমাদের ব্রেইনের মনোযোগ ও কার্যক্ষমতা ২০.৪% কমে যায় (UT Austin Study)। এটি দূর করার জন্য AERA COGNITIVE একটি সুনির্দিষ্ট সায়েন্টিফিক অপারেটিং সিস্টেম:\n\n১. আমাদের ওয়েবসাইটে ৪টি ফ্রি টুল রয়েছে (ফোকাস গেম, ৪০Hz ফোকাস অডিও, স্ক্রিন-টাইম ক্যালকুলেটর ও ক্রোনোটাইপ চার্ট)—যা আপনি এখনই ১ টাকাও না দিয়ে ব্যবহার করতে পারবেন: https://rizumkhanbuilds.netlify.app/\n\n২. আর আপনি যদি স্থায়ীভাবে পড়ার টেবিলে ডিপ-ফোকাস আনতে চান, তবে মাত্র ৳৯৯ (১ জনের জন্য) বা ৳৪৯৯ (৫ জন বন্ধুর জন্য) পেমেন্ট করে সম্পূর্ণ Notion Command Center + 3M Tracker + 1-Page Printable Desk Card ইনস্ট্যান্ট ডাউনলোড করে নিতে পারবেন!`;
+      } else if (scenario === 'followup') {
+        output.value = `হ্যালো ${name}! আপনি কি ওয়েবসাইটে আমাদের ফ্রি 60-Second Brain Tax গেমটি খেলেছেন? আপনার ফোকাস পেনাল্টি কত % এসেছে জানাবেন!\n\nআমাদের ৳৯৯ আর্লি-বার্ড অফারের শেষ কয়েকটি স্লট বাকি রয়েছে। আপনি চাইলে এখনই:\n• bKash Personal: +8801720674268\n• Nagad Personal: +8801708761298\n\n-এ ৳৯৯ Send Money করে আপনার ট্রানজ্যাকশন আইডি এখানে দিলে আমরা ইনস্ট্যান্ট আপনার Notion Command Center ডেলিভারি করে দেব।`;
+      } else if (scenario === 'squad') {
+        output.value = `আসসালামু আলাইকুম ${name}! 5-User Squad Pass-এ যুক্ত হওয়ার জন্য ধন্যবাদ।\n\n৳৪৯৯ পেমেন্ট করার পর আপনি পাচ্ছেন:\n1. আপনার এবং আপনার ৪ জন বন্ধুর জন্য পৃথক Notion Command Center লাইসেন্স।\n2. ৫ জনের জন্য প্রিন্টযোগ্য হাই-রেজোলিউশন Desk Anchor Card।\n3. আপনাদের পড়ার রুটিন অপ্টিমাইজ করার জন্য কাস্টম সারকাডিয়ান গাইডলাইন।\n\nপেমেন্ট পাঠাতে পারেন:\n• bKash Personal: +8801720674268\n• Nagad Personal: +8801708761298\n• Bank: Trust Bank PLC (A/C: 00110466000494, Rizum khan)\n\nপেমেন্ট পাঠিয়ে এখানে স্ক্রিনশট বা TrxID দিন; আমরা সাথে সাথে আপনাদের স্কোয়াড লিংক হস্তান্তর করব!`;
+      }
+    }
+
+    function copyGeneratedWhatsApp() {
+      copySafe(document.getElementById('wa-output').value);
+      showToast("WhatsApp reply copied!");
+    }
+
+    function launchWhatsAppDirect() {
+      let phone = document.getElementById('wa-phone').value.trim();
+      phone = phone.replace(/[^0-9]/g, '');
+      if (phone.startsWith('01')) phone = '88' + phone;
+      const text = encodeURIComponent(document.getElementById('wa-output').value);
+      const url = phone ? `https://wa.me/${phone}?text=${text}` : `https://wa.me/8801410761298?text=${text}`;
+      window.open(url, '_blank');
+    }
+
+    // ==========================================
+    // GEM 3: B2B OUTREACH PITCHER
+    // ==========================================
+    function generateB2BPitch() {
+      const org = document.getElementById('b2b-org').value.trim() || 'University Batch';
+      const contact = document.getElementById('b2b-contact').value.trim() || 'President';
+      const output = document.getElementById('b2b-output');
+
+      output.value = `Subject: ফ্রি কগনিটিভ ডায়াগনস্টিক টুল ও AIS Institutional Partnership প্রস্তাবনা\n\nআসসালামু আলাইকুম ${contact},\nArmy IBA Specialist (AIS)-এর পক্ষ থেকে শুভেচ্ছা।\n\nশিক্ষার্থীদের স্মার্টফোন আসক্তি ও পড়ার টেবিলে মনোযোগহীনতা দূর করতে সম্প্রতি আমরা লঞ্চ করেছি AERA COGNITIVE - The Neural Reset Protocol™, যা UT Austin ও UC Berkeley-এর কগনিটিভ সায়েন্স রিসার্চের ওপর ভিত্তি করে তৈরি।\n\n${org}-এর শিক্ষার্থীরা আমাদের সাইটে গিয়ে সম্পূর্ণ ফ্রিতে 60-Second Brain Tax Test এবং 40Hz Gamma Focus Audio ব্যবহার করতে পারবে: https://rizumkhanbuilds.netlify.app/\n\nপ্রাতিষ্ঠানিক পার্টনারশিপ অফার (Institutional Pass):\nআপনার ক্লাবের সর্বোচ্চ ৫০ জন শিক্ষার্থীর পড়ার টেবিল ফোকাসড করতে আমাদের সম্পূর্ণ Notion Command Center ও Printable Desk Card-এর প্রাতিষ্ঠানিক লাইসেন্স ফি রেগুলার ৳১৫,০০০ টাকা হলেও, আর্লি-বার্ড ইনস্টিটিউশনাল কোহর্টে আমরা মাত্র ৳৪,৯৯৯ টাকায় ফুল অ্যাক্সেস ও অনবোর্ডিং দিচ্ছি।\n\nপেমেন্ট অ্যাকাউন্ট:\n• bKash Personal: +8801720674268 | Nagad Personal: +8801708761298\n• Trust Bank PLC: 00110466000494 (Rizum khan)\n\nবিস্তারিত আলোচনা করতে সরাসরি কল বা হোয়াটসঅ্যাপ করুন: +8801410761298 (armyibaspecialist@gmail.com)।`;
+    }
+
+    function copyB2BProposal() {
+      copySafe(document.getElementById('b2b-output').value);
+      showToast("B2B proposal copied!");
+    }
+
+    function openB2BMailClient() {
+      const email = document.getElementById('b2b-email').value.trim() || 'club@univ.edu';
+      const subject = encodeURIComponent("ফ্রি কগনিটিভ ডায়াগনস্টিক টুল ও AIS Institutional Partnership প্রস্তাবনা");
+      const body = encodeURIComponent(document.getElementById('b2b-output').value);
+      window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_blank');
+    }
+
+    // ==========================================
+    // GEM 1: VIRAL SEEDING POST GENERATOR
+    // ==========================================
+    function generateViralPost() {
+      const hook = document.getElementById('growth-hook').value;
+      const url = document.getElementById('growth-url').value.trim();
+      const output = document.getElementById('growth-output');
+
+      if (hook === 'braintax') {
+        output.value = `চ্যালেঞ্জ: কার ব্রেইন ফোকাস পেনাল্টি ১০০%-এর নিচে আসে স্ক্রিনশট দাও!\n\nUC Berkeley ল্যাবের একটা লাইভ ফোকাস টেস্ট দিলাম AERA COGNITIVE (SYS-AIS)-এর সাইটে। রাউন্ড ১-এ sequential টাইপ করতে লাগলো ২.৪ সেকেন্ড, আর রাউন্ড ২-এ context-switching করতে গিয়ে আমার +132% Cognitive Friction Penalty আসছে!\n\nপড়ার টেবিলে বারবার ফোন চেক করার কারণে আমাদের ব্রেইনের স্পিড যে কতটা স্লো হয়ে যায়, এই টেস্টটা না দিলে বিশ্বাস হতো না।\n\nসাইটটাতে ৪টা ফ্রি সায়েন্টিফিক টুল উন্মুক্ত করা আছে (কোনো সাইন-আপ বা টাকা লাগে না):\n১. ৬০-সেকেন্ড ব্রেইন ট্যাক্স ফোকাস গেম\n২. স্ক্রিন-টাইম লাইফ লস ক্যালকুলেটর (আমার বছরে ৮৩ দিন ফোন চুরি করছে!)\n৩. পড়ার সময় ব্যাকগ্রাউন্ডে শোনার ফ্রি 40Hz Gamma Focus Audio\n৪. Nobel Chronotype পড়ার সময় ম্যাপার\n\nকার কত পার্সেন্ট পেনাল্টি স্কোর আসলো, টেস্ট দিয়ে কমেন্টে স্ক্রিনশট শেয়ার করো তো দেখি!\nফ্রি টেস্ট লিংক: ${url}`;
+      } else if (hook === 'nightowl') {
+        output.value = `যারা রাত জাগা পেঁচা (Night Owl), ভোর ৫টায় ওঠার চেষ্টা করে নিজের ক্ষতি কোরো না!\n\nসমাজ আমাদের শিখিয়েছে ভোর ৫টায় না উঠলে নাকি জীবনে কিচ্ছু করা যায় না। অথচ ২০১৭ সালের নোবেল বিজয়ী সারকাডিয়ান রিসার্চ বলছে—মানুষের ব্রেইন বায়োলজিক্যালি ৩ ধরনের:\n1. Biphasic (৬৫% মানুষ): যাদের দিনে ২ বার ফোকাসের পিক আসে।\n2. Morning Lark (২০% মানুষ): যারা প্রাকৃতিকভাবে ভোরে কাজ করতে পারে।\n3. Night Owl (১৫% মানুষ): যাদের আসল ক্রিয়েটিভ ও অ্যানালিটিক্যাল ব্রেইন চালু হয় সন্ধ্যায় ও রাতে।\n\nআপনি যদি নাইট-আউল হয়ে জোর করে ৫টায় ওঠেন, আপনার ব্রেইন কর্টিসোল ঘাটতিতে পড়ে সারাদিন ব্রেইন ফগে থাকবে।\n\nAIS (Army IBA Specialist)-এর প্ল্যাটফর্মে নিজের ক্রোনোটাইপ শিডিউল এবং পড়ার সময় শোনার 40Hz Gamma Audio একদম ফ্রিতে ব্যবহার করুন। আর ফোন আসক্তি চিরতরে রিসেট করতে ওদের ফুল Notion Command Center পাওয়া যাচ্ছে মাত্র ৯৯ টাকায়!\nফ্রি অডিও ও টেস্ট লিংক: ${url}`;
+      } else if (hook === 'screentime') {
+        output.value = `আপনার স্মার্টফোন কি আপনার জীবন থেকে প্রতি বছর ২–৩ মাস আস্ত কেটে নিয়ে যাচ্ছে?\n\nসহজ একটা হিসাব:\nআপনি যদি দিনে গড়ে ৫.৫ ঘণ্টা ফোনে কাটান, তবে বছরে আপনি নষ্ট করছেন ৮৩.৬টি সম্পূর্ণ ২৪ ঘণ্টার দিন। অর্থাৎ প্রতি ৪ বছরে ১ বছর আস্ত গায়েব!\n\nUT Austin-এর গবেষণা অনুযায়ী, পড়তে বসলে ফোন টেবিলে উল্টো করে রাখলেও ব্রেইনের আইকিউ ২০.৪% কমে যায়। কারণ Salience Network সারাক্ষণ নজর রাখে।\n\nAERA COGNITIVE (SYS-AIS)-এর সাইটে গিয়ে ১ টাকাও না দিয়ে টেস্ট করে দেখুন আপনার স্ক্রিন-টাইম লস কত এবং পড়ার সময় শোনার 40Hz গামা অডিও ফ্রিতে প্লে করুন।\nফ্রি টুলস লিংক: ${url}`;
+      }
+    }
+
+    function copyViralPost() {
+      copySafe(document.getElementById('growth-output').value);
+      showToast("Community post copied!");
+    }
+
+    // ==========================================
+    // GEM 4: MANUAL ORDER PROCESS
+    // ==========================================
+    function handleManualOrder(e) {
+      e.preventDefault();
+      const name = document.getElementById('ord-name').value.trim();
+      const email = document.getElementById('ord-email').value.trim();
+      const tier = document.getElementById('ord-tier').value;
+      const method = document.getElementById('ord-method').value;
+      const trx = document.getElementById('ord-trx').value.trim();
+
+      let amount = 99;
+      if (tier === 'squad') amount = 499;
+      if (tier === 'b2b') amount = 4999;
+
+      if (tier === 'solo') state.soloCount++;
+      if (tier === 'squad') state.squadCount++;
+      if (tier === 'b2b') state.b2bCount++;
+
+      state.total += amount;
+      state.wallets[method] += amount;
+
+      state.orders.push({
+        name,
+        email,
+        tier,
+        amount,
+        method,
+        trx,
+        time: new Date().toLocaleTimeString()
+      });
+
+      saveState();
+
+      document.getElementById('ops-log-output').classList.remove('hidden');
+      document.getElementById('ops-dispatch-msg').innerHTML = `
+        <strong>Customer:</strong> ${name} (${email})<br>
+        <strong>Notion Deliverable:</strong> https://www.notion.so/AERA-COGNITIVE-Neural-Reset-Protocol-SYS-AIS-Command-Center-405e21c534848031b982d690d7d2c754<br>
+        <strong>TrxID Status:</strong> ${trx} verified (৳${amount} to ${method.toUpperCase()})
+      `;
+
+      showToast(`Order for ${name} verified!`);
+      e.target.reset();
+    }
+
+    // ==========================================
+    // PROMPTS HUB VIEWER
+    // ==========================================
+    const promptLibrary = {
+      gem6: `You are AIS-G6-CINEMA, the Executive Creative Director and Narrative Film Architect for AERA COGNITIVE (SYS-AIS), backed by Army IBA Specialist.\n\nYOUR MANDATE:\nConceive, direct, and script world-class, emotionally devastating, and scientifically rigorous social media content (Reels, TikToks, Documentary Short Films, Swiss-style Infographic Carousels, and Narrative Essays). Your creative work must rival Apple, Nike, and A24 in cinematic maturity, while remaining deeply rooted in the authentic cultural, physical, and emotional texture of Bangladesh.\n\nVOICE & AESTHETIC DIRECTIVES:\n1. NO GENERIC INFLUENCER TONE: Never say "Hey guys!", "Are you struggling to focus?", or "Buy this product!". Speak like an observant, empathetic documentary filmmaker and senior neuroscientist.\n2. SENSORY LOCAL TEXTURE: Ground visual and narrative prompts in tangible Bangladeshi realities—foggy Dhaka winter mornings, yellow streetlight through an iron grill window, metallic hum of a ceiling fan at 3:00 AM, tea stalls near Curzon Hall, the blue screen reflecting off tired corneas.\n3. THE SCIENCE BRIDGE: Always pivot from raw emotional vulnerability into clinical, empowering neuroscience (UT Austin visual field data, UC Berkeley working memory findings, Salience Network hijacking, 2017 Nobel circadian biology).\n4. ABSOLUTION OVER BLAME: Never shame the user. Position algorithms as industrial-grade neurological weapons and the user as an unequipped soldier. The product is their cognitive armor.\n5. LANGUAGE REGISTRY: Elite Cinematic Banglish. Authentic, poignant Bengali prose laced with sharp, unforced English scientific and technological terminology.`,
+      gem1: `You are AIS-G1-GROWTH, the Senior Acquisition Copywriter & Creative Strategist for AERA COGNITIVE (SYS-AIS), backed by Army IBA Specialist.\n\nYOUR MANDATE:\nGenerate ultra-high-converting Meta Ad scripts, Facebook community seeding posts, and short-form video hooks designed specifically for university students (DU, IBA, BUP, NSU, BRACU, SUST), admission aspirants, and remote freelancers in Bangladesh.\n\nPSYCHOLOGICAL RULES:\n1. NEVER sell the product in the hook. Hook with shocking neuroscience metrics.\n2. Validate their struggle immediately: They are NOT lazy; their Salience Network is hijacked.\n3. Drive traffic to the 4 FREE tools first.\n4. Position ৳99 Solo, ৳499 Squad, and ৳4,999 Institutional Pass as no-brainer impulse decisions.\n5. Language: Elite Banglish. Zero formal bookish Bengali.`,
+      gem2: `You are AIS-G2-SALES, the Lead Inbound Closer for AERA COGNITIVE (SYS-AIS) on WhatsApp (+8801410761298).\n\nYOUR MANDATE:\nHandle incoming student/customer chats, solve objections in under 3 sentences, provide payment instructions, verify transactions, and deploy the 2-Hour ৳499 Squad Pass upsell.\n\nOFFICIAL CHANNELS TO PROVIDE:\n- bKash Personal: +8801720674268 (Send Money)\n- Nagad Personal: +8801708761298 (Send Money)\n- Trust Bank PLC: 00110466000494 (Rizum khan)\n- Notion Deliverable: https://www.notion.so/AERA-COGNITIVE-Neural-Reset-Protocol-SYS-AIS-Command-Center-405e21c534848031b982d690d7d2c754`,
+      gem3: `You are AIS-G3-B2B, the Enterprise Partnership Director representing Army IBA Specialist (AIS).\n\nYOUR MANDATE:\nDraft high-prestige, personalized B2B outreach proposals to university club executives, batch leaders, and coaching academy founders across Bangladesh for the ৳4,999 Institutional Cohort License (covering up to 50 students).\n\nAUTHORITY ANCHORS:\n- Research base: UC Berkeley & UT Austin Fluid Intelligence Studies.\n- Free goodwill offer: Entire batch gets free access to the 4 web diagnostic tools.\n- Commercial deal: Full Notion Command Center batch license regular price ৳15,000; discounted to ৳4,999 for the first 25 approved institutions.`,
+      gem4: `You are AIS-G4-OPS, the Head of Logistics & Security for AERA COGNITIVE (SYS-AIS).\n\nYOUR MANDATE:\n1. Validate TrxID syntax and transaction references received from the website form.\n2. Structure the customer order payload for instantaneous logging into Google Sheets.\n3. Generate the exact post-purchase delivery message for both Email and WhatsApp containing the secure Notion duplicate link and download instructions.\n4. Flag suspicious, duplicate, or malformed transaction IDs for manual intervention by the human operator.`,
+      gem5: `You are AIS-G5-EXEC, the Chief Operating Officer of the AERA COGNITIVE (SYS-AIS) 48-Hour Campaign.\n\nYOUR MANDATE:\n1. Real-time monitoring of the ৳2,00,000 target:\n   - 25 Institutional Batches @ ৳4,999 = ৳1,24,975\n   - 100 Squad Passes @ ৳499 = ৳49,900\n   - 260 Solo Passes @ ৳99 = ৳25,740\n   - Total Target: ৳2,00,615 BDT\n2. Audit treasury allocation to ensure no personal bKash/Nagad account exceeds daily transaction velocity caps.\n3. Enforce the hourly execution checklist across the 48-hour war room window.`
+    };
+
+    function renderPromptView() {
+      const key = document.getElementById('prompt-select').value;
+      document.getElementById('prompt-content-view').value = promptLibrary[key];
+    }
+
+    function copyActivePrompt() {
+      copySafe(document.getElementById('prompt-content-view').value);
+      showToast("System prompt copied to clipboard!");
+    }
+
+    // ==========================================
+    // NATIVE WEB AUDIO 40HZ FOCUS DRONE (HUD)
+    // ==========================================
+    let audioCtx = null;
+    let isDronePlaying = false;
+    let droneOsc = null;
+    let droneGain = null;
+    let modOsc = null;
+    let modGain = null;
+
+    function toggleHudAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const label = document.getElementById('hud-audio-label');
+      const dot = document.getElementById('hud-audio-dot');
+
+      if (!isDronePlaying) {
+        // Carrier 216Hz modulated at 40Hz
+        droneOsc = audioCtx.createOscillator();
+        droneOsc.type = 'sine';
+        droneOsc.frequency.setValueAtTime(216, audioCtx.currentTime);
+
+        droneGain = audioCtx.createGain();
+        droneGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+        modOsc = audioCtx.createOscillator();
+        modOsc.type = 'square';
+        modOsc.frequency.setValueAtTime(40, audioCtx.currentTime);
+
+        modGain = audioCtx.createGain();
+        modGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+
+        modOsc.connect(modGain.gain);
+        droneOsc.connect(modGain);
+        modGain.connect(droneGain);
+        droneGain.connect(audioCtx.destination);
+
+        droneOsc.start();
+        modOsc.start();
+
+        isDronePlaying = true;
+        label.innerText = '40Hz Drone: ACTIVE';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping';
+        showToast("40Hz Gamma Focus Audio Started");
+      } else {
+        try {
+          droneOsc.stop();
+          modOsc.stop();
+          droneOsc.disconnect();
+          modOsc.disconnect();
+        } catch(e){}
+        isDronePlaying = false;
+        label.innerText = '40Hz Drone: OFF';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-zinc-500';
+        showToast("Audio Stopped");
+      }
+    }
+
+    // Utilities
+    function copySafe(text) {
+      const t = document.createElement('textarea');
+      t.value = text;
+      document.body.appendChild(t);
+      t.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(t);
+    }
+    function copyNumber(text, label) {
+      copySafe(text);
+      showToast(`${label} copied: ${text}`);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2200);
+    }
+
+    const b2bLeads = [
+      { id: 1, org: 'DU IBA Communication Club', target: '50-Seat Cohort (৳4,999)', status: 'Pending' },
+      { id: 2, org: 'BUP Finance & Business Society', target: '50-Seat Cohort (৳4,999)', status: 'Pending' },
+      { id: 3, org: 'NSU YES! & MBA Club', target: '50-Seat Cohort (৳4,999)', status: 'Pending' },
+      { id: 4, org: 'BRACU Biz Bee & Computer Club', target: '50-Seat Cohort (৳4,999)', status: 'Pending' },
+      { id: 5, org: 'SUST Career Club & AIBA Batch', target: '50-Seat Cohort (৳4,999)', status: 'Pending' },
+      { id: 6, org: 'BUET & DMC Admission Mentors', target: '200-Seat Campus (৳14,999)', status: 'Pending' }
+    ];
+
+    function renderCrmGrid() {
+      const grid = document.getElementById('b2b-crm-grid');
+      if (!grid) return;
+      grid.innerHTML = b2bLeads.map((l, idx) => {
+        const badgeCol = l.status === 'Closed' ? 'bg-emerald-950 text-emerald-300 border-emerald-700' : (l.status === 'Pitched' ? 'bg-amber-950 text-amber-300 border-amber-700' : 'bg-zinc-900 text-zinc-400 border-zinc-700');
+        return `<div class="bg-black/60 border border-zinc-800 rounded-2xl p-4 space-y-2.5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[10px] px-2 py-0.5 rounded border ${badgeCol}">${l.status.toUpperCase()}</span>
+              <span class="text-[10px] text-sky-400">${l.target}</span>
+            </div>
+            <strong class="text-white text-sm block mt-1.5 font-sans">${l.org}</strong>
+          </div>
+          <div class="flex items-center gap-1.5 pt-2 border-t border-zinc-800/80">
+            <button type="button" onclick="pitchLeadQuick(${idx})" class="flex-1 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 text-blue-300 py-1.5 rounded-lg text-[11px] font-bold">📲 Pitch Copy</button>
+            <button type="button" onclick="cycleLeadStatus(${idx})" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 py-1.5 rounded-lg text-[11px]">Status ↻</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function pitchLeadQuick(idx) {
+      const l = b2bLeads[idx];
+      document.getElementById('b2b-org').value = l.org;
+      generateB2BPitch();
+      selectGem('b2b');
+      copySafe(document.getElementById('b2b-output').value);
+      l.status = 'Pitched';
+      renderCrmGrid();
+      showToast('Copied tailored B2B pitch for ' + l.org);
+    }
+
+    function cycleLeadStatus(idx) {
+      const states = ['Pending', 'Pitched', 'Closed'];
+      const cur = states.indexOf(b2bLeads[idx].status);
+      b2bLeads[idx].status = states[(cur + 1) % states.length];
+      if (b2bLeads[idx].status === 'Closed') {
+        quickAddSale('b2b');
+      }
+      renderCrmGrid();
+    }
+
+    function copyFbCalendarPost(num) {
+      const posts = {
+        1: `🎁 ১ টাকাও লাগবে না—এই ৪টি ফ্রি নিউরো-টুল দিয়ে মাত্র ৬০ সেকেন্ডে আপনার ব্রেইনের ফোকাস টেস্ট করুন!
+
+পড়তে বসলেই ৫ মিনিটের মধ্যে হাত নিশপিশ করে ফোন ধরার জন্য? পড়ার টেবিলে ফোন সাইলেন্ট করে উল্টে রাখলেও আপনার ব্রেইনের IQ ২০.৪% কমে যায় (UT Austin Research)।
+
+Army IBA Specialist (AIS)-এর ল্যাব থেকে আমরা সবার জন্য ওয়েবসাইটে ৪টি ফ্রি ইন্টারেক্টিভ ব্রেইন টুল উন্মুক্ত করেছি:
+১. 🎮 Free 60-Second Brain Tax™ Game
+২. ⚠️ Free Screen-Time Loss Calculator
+৩. 🎧 Free 40Hz Gamma Focus Studio + 25m Timer
+৪. 🧬 Free Nobel Chronotype Mapper
+
+আর ফোন আসক্তি চিরতরে রিসেট করতে পেজের নিচে মাত্র ৳৯৯ আর্লি-বার্ড অফারে পাবেন আমাদের ৭-ইন-১ Neural Reset Vault™ + Notion Command Center!
+(Instant Unlock via bKash +8801720674268 | Nagad +8801708761298)
+
+👇 কমেন্টে দেওয়া লিংকে ক্লিক করে এখনই ফ্রি ব্রেইন গেমটি খেলুন:
+🔗 https://rizumkhanbuilds.netlify.app/`,
+        2: `মাঝরাতে পড়ার টেবিলে বসে নিজের ওপর রাগ হয়, তাই না? মনে হয়—"আমি কেন পারছি না?" 💔
+
+বাড়ি থেকে মা-বাবার দোয়া নিয়ে আমরা কত বড় স্বপ্ন দেখি। অথচ পড়তে বসলেই ৫ মিনিটের মাথায় হাত চলে যায় ফোনে। রিলস স্ক্রোল করতে করতে রাত ২টা বেজে যায়, আর বুক ভরে ওঠে অপরাধবোধে।
+
+বিশ্বাস করুন—আপনি অলস নন! UT Austin ও UC Berkeley-এর গবেষণা প্রমাণ করেছে: টেবিলে ফোন সাইলেন্ট করে রাখলেও আপনার ব্রেইনের IQ ২০.৪% কমে যায়।
+
+আপনার এই নীরব যুদ্ধটাকে জেতাতে Army IBA Specialist (AIS) থেকে আমরা তৈরি করেছি AERA COGNITIVE — The Neural Reset Protocol™।
+
+এখনই ১ টাকাও খরচ না করে আমাদের সাইটে ৪টি ফ্রি ব্রেইন টুল দিয়ে নিজের ফোকাস টেস্ট করুন, আর মাত্র ৳৯৯-এ আনলক করুন ৳৩,৫০০ মূল্যের ৭টি প্রিমিয়াম ডিপ-ওয়ার্ক অ্যাসেট!
+🔗 ফ্রি টেস্ট লিংক: https://rizumkhanbuilds.netlify.app/`,
+        3: `[28-SECOND CAPCUT / REEL SCREEN-RECORDING SCRIPT]
+
+• 00-04s (Show Website Hero & Desk Simulator): "পড়ার টেবিলে ফোন বন্ধ করে রাখলেও আপনার ব্রেইনের IQ ২০.৪% কমে যায়! বিশ্বাস হচ্ছে না? ১ টাকাও লাগবে না, নিজে পরীক্ষা করুন।"
+• 04-12s (Show 60s Brain Tax Game hitting +135% Penalty): "আমাদের ওয়েবসাইটে ঢুকে ফ্রি ৬০-সেকেন্ডের এই ব্রেইন গেমটা খেলুন—দেখুন মাল্টিটাস্কিংয়ে ব্রেইন কত স্লো হয়ে গেছে!"
+• 12-20s (Tap 40Hz Audio & 7-in-1 Vault Preview): "সাথে একদম ফ্রি পাচ্ছেন পড়ার সময় শোনার 40Hz গামা অডিও এবং ক্রোনোটাইপ রুটিন।"
+• 20-28s (Show ৳99 bKash +8801720674268 3-Second Auto-Unlock): "আর মাত্র ৯৯ টাকায় বিকাশ বা নগদে পেমেন্ট করলেই ৩ সেকেন্ডে স্ক্রিনেই আনলক হবে ৭টি প্রিমিয়াম ডিপ-ওয়ার্ক অ্যাসেট ও Notion Command Center! বায়ো বা কমেন্টের লিংকে ক্লিক করুন।"`
+      };
+      copySafe(posts[num]);
+      showToast('Copied AIS Facebook Page Post #' + num + '!');
+    }
+
+
+    // ==========================================
+    // LIVE WIRE ENGINE: SYNC WITH INDEX.HTML & CRYPTOGRAPHIC PIN
+    // ==========================================
+    const warRoomChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('ais_war_room_sync') : null;
+
+    function computeAISPin(trx) {
+      const clean = (trx || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (!clean) return 'AIS-----';
+      let h = 2166136261;
+      const secretSalt = 'AIS_BD_SOVEREIGN_2026_KEY';
+      const combined = clean + ':' + secretSalt;
+      for (let i = 0; i < combined.length; i++) {
+        h ^= combined.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      const hex = (h >>> 0).toString(16).toUpperCase().padStart(8, '0');
+      return 'AIS-' + hex.slice(0, 4);
+    }
+
+    function computeInstantPinUI(val) {
+      document.getElementById('calc-pin-output').innerText = computeAISPin(val);
+    }
+
+    function copyCalculatedPin() {
+      const trx = document.getElementById('calc-trx-input').value.trim().toUpperCase();
+      const pin = computeAISPin(trx);
+      const msg = `✅ আপনার পেমেন্ট ভেরিফাইড হয়েছে! ওয়েবসাইটের ভেরিফিকেশন বক্সে আপনার ৬-অক্ষরের আনলক পিন দিন: ${pin}
+
+অথবা সরাসরি Notion Command Center খুলুন: https://www.notion.so/AERA-COGNITIVE-Neural-Reset-Protocol-SYS-AIS-Command-Center-405e21c534848031b982d690d7d2c754`;
+      copySafe(msg);
+      showToast('Copied Unlock PIN + WhatsApp Reply: ' + pin);
+    }
+
+    function getLiveOrdersBus() {
+      try {
+        return JSON.parse(localStorage.getItem('ais_live_orders_v5') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveLiveOrdersBus(arr) {
+      try {
+        localStorage.setItem('ais_live_orders_v5', JSON.stringify(arr));
+      } catch (e) {}
+    }
+
+    function renderIncomingQueue() {
+      const box = document.getElementById('live-incoming-queue');
+      if (!box) return;
+      const orders = getLiveOrdersBus();
+      if (orders.length === 0) {
+        box.innerHTML = `<div class="bg-zinc-950/80 border border-zinc-800 rounded-2xl p-4 text-center text-zinc-400">● Listening live on <code>ais_war_room_sync</code>... Submit an order on <code>index.html</code> (or paste a TrxID above) to verify in real time.</div>`;
+        return;
+      }
+
+      box.innerHTML = orders.slice(-8).reverse().map(o => {
+        const pin = computeAISPin(o.trx);
+        const stBadge = o.status === 'APPROVED'
+          ? '<span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-700">✓ APPROVED & UNLOCKED</span>'
+          : (o.status === 'REJECTED'
+              ? '<span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-700">⛔ FAKE BLOCKED</span>'
+              : '<span class="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-700 animate-pulse">⏳ PENDING VERIFICATION</span>');
+
+        return `<div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              ${stBadge}
+              <strong class="text-white">${o.orderId}</strong>
+              <span class="text-zinc-400">• ${o.time || ''}</span>
+              <span class="text-sky-400 font-bold">PIN: ${pin}</span>
+            </div>
+            <div class="text-zinc-200">
+              <strong>${o.name}</strong> (${o.phone}) • <span class="text-emerald-400 font-bold">৳${o.price}</span> via ${o.gateway} • TrxID: <code class="bg-zinc-900 px-2 py-0.5 rounded text-amber-300 font-bold">${o.trx}</code>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button type="button" onclick="decideIncomingOrder('${o.orderId}', 'APPROVED')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl transition">
+              ✓ Approve &amp; Auto-Unlock
+            </button>
+            <button type="button" onclick="sendPinOnWhatsApp('${o.phone}', '${o.name}', '${o.trx}', '${pin}')" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-3.5 py-2 rounded-xl transition">
+              📲 Send PIN on WA
+            </button>
+            <button type="button" onclick="decideIncomingOrder('${o.orderId}', 'REJECTED')" class="bg-rose-600/20 hover:bg-rose-600/40 border border-rose-500/50 text-rose-300 font-bold px-3 py-2 rounded-xl transition">
+              ⛔ Block Fake
+            </button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function decideIncomingOrder(orderId, decision) {
+      const orders = getLiveOrdersBus();
+      const target = orders.find(o => o.orderId === orderId);
+      if (!target) return;
+
+      const prevStatus = target.status;
+      target.status = decision;
+      saveLiveOrdersBus(orders);
+
+      if (warRoomChannel) {
+        try {
+          warRoomChannel.postMessage({
+            type: 'ORDER_DECISION',
+            orderId: target.orderId,
+            trx: target.trx,
+            status: decision
+          });
+        } catch (e) {}
+      }
+
+      // If approved for the first time, log into War Room revenue state
+      if (decision === 'APPROVED' && prevStatus !== 'APPROVED') {
+        const tier = target.tier || 'solo';
+        const amount = target.price || 99;
+        const mKey = target.method || 'bkash2';
+        if (tier === 'solo') state.soloCount++;
+        else if (tier === 'squad') state.squadCount++;
+        else state.b2bCount++;
+        state.total += amount;
+        state.wallets[mKey] = (state.wallets[mKey] || 0) + amount;
+        state.orders.push({
+          name: target.name,
+          email: target.email,
+          tier,
+          amount,
+          method: mKey,
+          trx: target.trx,
+          time: new Date().toLocaleTimeString()
+        });
+        saveState();
+        showToast('✓ Approved & Auto-Unlocked ' + target.orderId + ' (+৳' + amount + ')');
+      } else if (decision === 'REJECTED') {
+        showToast('⛔ Blocked Fake TrxID: ' + target.trx);
+      }
+      renderIncomingQueue();
+    }
+
+    function sendPinOnWhatsApp(phone, name, trx, pin) {
+      let cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+      if (cleanPhone.startsWith('01')) cleanPhone = '88' + cleanPhone;
+      const msg =
+        `✅ অভিনন্দন ${name}! আপনার পেমেন্ট (TrxID: ${trx}) সফলভাবে ভেরিফাইড হয়েছে।
+
+` +
+        `🔓 আপনার 60-Second Cryptographic Unlock PIN: *${pin}*
+` +
+        `(ওয়েবসাইটের ভেরিফিকেশন বক্সে এই পিনটি দিলেই সাথে সাথে সব ৭টি ফাইল আনলক হয়ে যাবে!)
+
+` +
+        `🚀 সরাসরি Notion Command Center লিংক:
+` +
+        `https://www.notion.so/AERA-COGNITIVE-Neural-Reset-Protocol-SYS-AIS-Command-Center-405e21c534848031b982d690d7d2c754`;
+      const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}` : `https://wa.me/8801410761298?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
+    }
+
+    if (warRoomChannel) {
+      warRoomChannel.onmessage = (ev) => {
+        if (ev.data && ev.data.type === 'NEW_PENDING_ORDER') {
+          renderIncomingQueue();
+          showToast('🔔 New Incoming Order: ' + ev.data.order.name + ' (TrxID: ' + ev.data.order.trx + ')');
+        }
+      };
+    }
+
+    window.addEventListener('storage', (ev) => {
+      if (ev.key === 'ais_live_orders_v5') {
+        renderIncomingQueue();
+      }
+    });
+
+    // Initialize Default States
+    window.addEventListener('DOMContentLoaded', () => {
+      renderIncomingQueue();
+      renderCrmGrid();
+      renderDashboard();
+      generateCinematicCreative();
+      generateWhatsAppReply();
+      generateB2BPitch();
+      generateViralPost();
+      renderPromptView();
+    });
+  </script>
+</body>
+</html>
